@@ -1,0 +1,7 @@
+.env*
+
+docker/data/frontend
+docker/data/backend
+docker/data/db/data
+
+.DS_Store

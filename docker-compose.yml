@@ -1,0 +1,65 @@
+version: "3"
+services:
+  db:
+    container_name: db
+    image: mariadb:10
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/data/db/conf.d:/etc/mysql/conf.d
+      - ./docker/data/db/data:/var/lib/mysql
+      - ./docker/data/db/initdb.d:/docker-entrypoint-initdb.d
+    env_file: .env.db
+    environment:
+      TZ: Asia/Seoul
+    networks:
+      - back-db
+    restart: always
+
+  backend:
+    container_name: backend
+    build:
+      context: ./docker
+      dockerfile: back.dockerfile
+    ports:
+      - 3001:3001
+    environment:
+      - PORT=3001
+    volumes:
+      - ./docker/data/backend/code:/app/code
+    networks:
+      - back-db
+      - nginx
+    depends_on:
+      - db
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./docker
+      dockerfile: front.dockerfile
+    restart: always
+    volumes:
+      - ./docker/data/frontend/build:/usr/share/nginx/html
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - ./docker/data/nginx/sites.conf:/etc/nginx/conf.d/sites.conf
+      - ./docker/data/nginx/sites-enabled:/etc/nginx/sites-enabled
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - back-front
+      - nginx
+    depends_on:
+      - backend
+
+networks:
+  back-db:
+    driver: bridge
+
+  back-front:
+    driver: bridge
+
+  nginx:
+    driver: bridge
