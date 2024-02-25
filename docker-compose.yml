@@ -23,10 +23,6 @@ services:
       dockerfile: back.dockerfile
     ports:
       - 3001:3001
-    environment:
-      - PORT=3001
-    volumes:
-      - ./docker/data/backend/code:/app/code
     networks:
       - back-db
       - nginx
