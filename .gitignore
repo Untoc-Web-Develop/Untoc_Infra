@@ -3,5 +3,6 @@
 docker/data/frontend
 docker/data/backend
 docker/data/db/data
+docker/data/db/initdb.d/*_data.sql
 
 .DS_Store
