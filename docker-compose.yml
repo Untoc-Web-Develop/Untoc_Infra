@@ -2,13 +2,14 @@ version: "3"
 services:
   db:
     container_name: db
-    image: mariadb:10
+    build:
+      context: ./docker
+      dockerfile: db.dockerfile
+    restart: always
     ports:
       - 3306:3306
     volumes:
-      - ./docker/data/db/conf.d:/etc/mysql/conf.d
-      - ./docker/data/db/data:/var/lib/mysql
-      - ./docker/data/db/initdb.d:/docker-entrypoint-initdb.d
+      - ./docker/data/db/data:/var/lib/mysql:rw
     env_file: .env.db
     environment:
       TZ: Asia/Seoul
@@ -18,6 +19,7 @@ services:
 
   backend:
     container_name: backend
+    restart: always
     build:
       context: ./docker
       dockerfile: back.dockerfile
