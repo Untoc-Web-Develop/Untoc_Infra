@@ -55,31 +55,6 @@ CREATE TABLE `apply_value` (
   CONSTRAINT `FK_c1dbd70553cce45ddb688b6d631` FOREIGN KEY (`apply_id`) REFERENCES `apply` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `file` (
-  `id` varchar(36) NOT NULL,
-  `created_at` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-  `updated_at` datetime(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6),
-  `link` varchar(255) NOT NULL,
-  `badge_id` varchar(36) DEFAULT NULL,
-  `post_id` varchar(36) DEFAULT NULL,
-  `team_id` varchar(36) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE `badge` (
-  `id` varchar(36) NOT NULL,
-  `created_at` datetime(6) NOT NULL DEFAULT current_timestamp(6),
-  `updated_at` datetime(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6),
-  `_key` varchar(255) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `icon` varchar(36) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `IDX_4c7611320c54217c182ae0dc55` (`_key`),
-  UNIQUE KEY `REL_f75c40644b02a1363c980448c9` (`icon`),
-  CONSTRAINT `FK_f75c40644b02a1363c980448c91` FOREIGN KEY (`icon`) REFERENCES `file` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 CREATE TABLE `board` (
   `id` varchar(36) NOT NULL,
   `created_at` datetime(6) NOT NULL DEFAULT current_timestamp(6),
@@ -157,6 +132,35 @@ CREATE TABLE `post` (
   KEY `FK_63753e3ee6a3c42e4a8a34cb7ec` (`board_id`),
   CONSTRAINT `FK_2f1a9ca8908fc8168bc18437f62` FOREIGN KEY (`author_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_63753e3ee6a3c42e4a8a34cb7ec` FOREIGN KEY (`board_id`) REFERENCES `board` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `file` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6),
+  `link` varchar(255) NOT NULL,
+  `badge_id` varchar(36) DEFAULT NULL,
+  `post_id` varchar(36) DEFAULT NULL,
+  `team_id` varchar(36) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_6f5531bea310c8d5d58f2e7b2f0` (`post_id`),
+  KEY `FK_85ff5e8682035fa42fbd245b2a7` (`team_id`),
+  CONSTRAINT `FK_6f5531bea310c8d5d58f2e7b2f0` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_85ff5e8682035fa42fbd245b2a7` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `badge` (
+  `id` varchar(36) NOT NULL,
+  `created_at` datetime(6) NOT NULL DEFAULT current_timestamp(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT current_timestamp(6) ON UPDATE current_timestamp(6),
+  `_key` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `icon` varchar(36) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_4c7611320c54217c182ae0dc55` (`_key`),
+  UNIQUE KEY `REL_f75c40644b02a1363c980448c9` (`icon`),
+  CONSTRAINT `FK_f75c40644b02a1363c980448c91` FOREIGN KEY (`icon`) REFERENCES `file` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `badge_log` (
